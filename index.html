@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Prediction System</title>
+    
+    <!-- CSS Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .info-header {
+            background: #0d6efd;
+            color: white;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .timestamp {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            background: #0d6efd;
+            color: white;
+            border: none;
+            padding: 1rem;
+        }
+
+        .section-title {
+            color: #0d6efd;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 0.8rem;
+            border: 1px solid #ced4da;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13,110,253,0.25);
+        }
+
+        .input-group-text {
+            background: #f8f9fa;
+            border-right: none;
+        }
+
+        .input-group .form-control {
+            border-left: none;
+        }
+
+        .btn-predict {
+            padding: 1rem 2rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+        }
+
+        .btn-predict:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(13,110,253,0.2);
+        }
+
+        .result-container {
+            background: #fff;
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+
+        .result-header {
+            background: #e9ecef;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        pre {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                margin: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Information -->
+    <div class="info-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <i class="fas fa-user me-2"></i>
+                    User: <strong id="userLogin">Elite Loans Api</strong>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <i class="far fa-clock me-2"></i>
+                    UTC: <strong id="currentDateTime">Loading...</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <!-- Form Card -->
+            <div class="col-lg-6">
+                <div class="card animate__animated animate__fadeIn">
+                    <div class="card-header">
+                        <h3 class="mb-0"><i class="fas fa-file-alt me-2"></i>Loan Application</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="loanForm">
+                            <!-- Personal Information -->
+                            <div class="section-title">
+                                <i class="fas fa-user me-2"></i>Personal Information
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">Gender</label>
+                                    <select class="form-select" id="gender" required>
+                                        <option value="">Select Gender</option>
+                                        <option value="1">Male</option>
+                                        <option value="0">Female</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Marital Status</label>
+                                    <select class="form-select" id="married" required>
+                                        <option value="">Select Status</option>
+                                        <option value="1">Married</option>
+                                        <option value="0">Single</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Financial Information -->
+                            <div class="section-title">
+                                <i class="fas fa-money-bill-wave me-2"></i>Financial Information
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">Applicant Income</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">₹</span>
+                                        <input type="text" class="form-control" id="applicantIncome" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Co-applicant Income</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">₹</span>
+                                        <input type="text" class="form-control" id="coapplicantIncome" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Loan Details -->
+                            <div class="section-title">
+                                <i class="fas fa-hand-holding-usd me-2"></i>Loan Details
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">Loan Amount</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">₹</span>
+                                        <input type="text" class="form-control" id="loanAmount" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Loan Term (months)</label>
+                                    <input type="number" class="form-control" id="loanTerm" required>
+                                </div>
+                            </div>
+
+                            <!-- Additional Details -->
+                            <div class="section-title">
+                                <i class="fas fa-info-circle me-2"></i>Additional Details
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">Education</label>
+                                    <select class="form-select" id="education" required>
+                                        <option value="">Select Education</option>
+                                        <option value="1">Graduate</option>
+                                        <option value="0">Not Graduate</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Self Employed</label>
+                                    <select class="form-select" id="selfEmployed" required>
+                                        <option value="">Select Status</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">Dependents</label>
+                                    <input type="number" class="form-control" id="dependents" min="0" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Credit History</label>
+                                    <select class="form-select" id="creditHistory" required>
+                                        <option value="">Select Credit History</option>
+                                        <option value="1">Good</option>
+                                        <option value="0">Bad</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary btn-predict">
+                                    <i class="fas fa-check-circle me-2"></i>Predict Approval
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Result Card -->
+            <div class="col-lg-6">
+                <div id="resultDisplay" class="card animate__animated animate__fadeIn" style="display: none;">
+                    <div class="card-header">
+                        <h3 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Prediction Result</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="resultContent"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center p-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h4 class="mt-3">Processing</h4>
+                    <p class="text-muted">Please wait while we analyze your application...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cleave.js@1.6.0/dist/cleave.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Select2 for dropdowns
+    $(document).ready(function() {
+        $('select').select2({
+            theme: 'bootstrap-5'
+        });
+    });
+
+    // Initialize Cleave.js for number formatting
+    const numberInputs = ['applicantIncome', 'coapplicantIncome', 'loanAmount'];
+    numberInputs.forEach(id => {
+        new Cleave(`#${id}`, {
+            numeral: true,
+            numeralThousandsGroupStyle: 'thousand',
+            numeralPositiveOnly: true
+        });
+    });
+
+    // Configure Toastr
+    toastr.options = {
+        closeButton: true,
+        progressBar: true,
+        positionClass: "toast-top-right",
+        timeOut: 5000
+    };
+
+    // DateTime Update Function with exact format
+    function updateDateTime() {
+        const now = new Date();
+        const year = now.getUTCFullYear();
+        const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(now.getUTCDate()).padStart(2, '0');
+        const hours = String(now.getUTCHours()).padStart(2, '0');
+        const minutes = String(now.getUTCMinutes()).padStart(2, '0');
+        const seconds = String(now.getUTCSeconds()).padStart(2, '0');
+        
+        const formatted = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        document.getElementById('currentDateTime').textContent = formatted;
+        return formatted;
+    }
+
+    // Update time immediately and every second
+    let currentDateTime = updateDateTime();
+    setInterval(() => {
+        currentDateTime = updateDateTime();
+    }, 1000);
+
+    // Form Submission Handler
+    const form = document.getElementById('loanForm');
+    const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+
+    // Configure Axios
+    axios.defaults.timeout = 10000; // 10 second timeout
+    axios.defaults.headers.common['Content-Type'] = 'application/json';
+    axios.defaults.headers.common['Accept'] = 'application/json';
+
+    form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    // Validate form
+    if (!form.checkValidity()) {
+        e.stopPropagation();
+        form.classList.add('was-validated');
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            text: 'Please fill all required fields correctly.'
+        });
+        return;
+    }
+
+    try {
+        // Prepare form data in the required JSON format
+        const formData = {
+            Gender: parseInt(document.getElementById('gender').value),
+            Married: parseInt(document.getElementById('married').value),
+            Dependents: parseInt(document.getElementById('dependents').value),
+            Education: parseInt(document.getElementById('education').value),
+            Self_Employed: document.getElementById('selfEmployed').value === "Yes" ? "Yes" : "No",
+            ApplicantIncome: parseFloat(document.getElementById('applicantIncome').value.replace(/,/g, '')),
+            CoapplicantIncome: parseFloat(document.getElementById('coapplicantIncome').value.replace(/,/g, '')),
+            LoanAmount: parseFloat(document.getElementById('loanAmount').value.replace(/,/g, '')),
+            Loan_Amount_Term: parseFloat(document.getElementById('loanTerm').value),
+            Credit_History: parseInt(document.getElementById('creditHistory').value)
+        };
+
+        // Show loading modal
+        loadingModal.show();
+
+        // Make API request with the correct data format
+        const response = await axios({
+            method: 'post',
+            url: 'https://loan-api-c0xd.onrender.com/predict',
+            data: formData,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            validateStatus: function (status) {
+                return status >= 200 && status < 500;
+            }
+        });
+        
+        // Hide loading modal
+        loadingModal.hide();
+
+        if (response.status === 200) {
+            // Prepare result display
+            const resultDiv = document.getElementById('resultDisplay');
+            const resultContent = document.getElementById('resultContent');
+            
+            // Format display content for prediction result
+            const displayContent = `
+                <div class="result-header">
+                    <div class="mb-3">
+                        <strong>Current Date and Time (UTC - YYYY-MM-DD HH:MM:SS formatted):</strong> ${currentDateTime}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Current User's Login:</strong> ${document.getElementById('userLogin').textContent}
+                    </div>
+                </div>
+                <pre class="mb-3">${JSON.stringify(response.data, null, 4)}</pre>
+                <div class="alert ${response.data.prediction === 'Approved' ? 'alert-success' : 'alert-danger'} fade show">
+                    <i class="fas ${response.data.prediction === 'Approved' ? 'fa-check-circle' : 'fa-times-circle'} me-2"></i>
+                    <strong>Prediction:</strong> ${response.data.prediction}
+                </div>
+            `;
+
+            // Update and show result
+            resultContent.innerHTML = displayContent;
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+
+            // Show toast notification
+            toastr[response.data.prediction === 'Approved' ? 'success' : 'warning'](
+                `Loan ${response.data.prediction}`,
+                'Prediction Result'
+            );
+        } else {
+            throw new Error('Server returned error status');
+        }
+
+    } catch (error) {
+        // Hide loading modal
+        loadingModal.hide();
+
+        // Log error details
+        console.error('API Error:', error);
+
+        // Show detailed error message
+        let errorMessage = 'An error occurred while processing your request.';
+        if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            errorMessage = `Server Error: ${error.response.status} - ${error.response.data.message || 'Unknown error'}`;
+        } else if (error.request) {
+            // The request was made but no response was received
+            errorMessage = 'Network Error: Could not connect to the server. Please check your internet connection.';
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            errorMessage = `Error: ${error.message}`;
+        }
+
+        // Show error using SweetAlert2
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: errorMessage,
+            footer: 'Please try again or contact support if the problem persists.'
+        });
+
+        // Update result display with error
+        const resultDiv = document.getElementById('resultDisplay');
+        const resultContent = document.getElementById('resultContent');
+        
+        resultContent.innerHTML = `
+            <div class="alert alert-danger">
+                <h5><i class="fas fa-exclamation-triangle me-2"></i>Error</h5>
+                <p class="mb-0">${errorMessage}</p>
+                <small class="text-muted">Time: ${currentDateTime}</small>
+            </div>
+        `;
+        resultDiv.style.display = 'block';
+        
+        // Show error toast
+        toastr.error(errorMessage, 'Error');
+    }
+});
+
+
+    // Add input validation styles
+    form.querySelectorAll('input, select').forEach(input => {
+        input.addEventListener('invalid', (e) => {
+            e.preventDefault();
+            input.classList.add('is-invalid');
+        });
+
+        input.addEventListener('input', () => {
+            if (input.validity.valid) {
+                input.classList.remove('is-invalid');
+            }
+        });
+    });
+});
+</script>
+</body>
+</html>
