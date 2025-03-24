@@ -9,6 +9,60 @@ model = joblib.load("random_forest_model.pkl")
 # Initialize Flask app
 app = Flask(__name__)
 
+from flask import render_template
+
+@app.route('/')
+def home():
+    return '''
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Loan API</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f4;
+                    padding: 20px;
+                }
+                h1 {
+                    color: #333;
+                }
+                .content {
+                    margin: 20px 0;
+                    padding: 10px;
+                    background-color: #fff;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                }
+                a {
+                    color: #007BFF;
+                    text-decoration: none;
+                }
+                a:hover {
+                    text-decoration: underline;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>Welcome to the Loan API!</h1>
+            <div class="content">
+                <h2>API Documentation</h2>
+                <p>This API allows you to process loan-related data. Below are the available endpoints:</p>
+                <ul>
+                    <li><strong>/loan</strong> - Endpoint to process loan information.</li>
+                    <li><strong>/predict</strong> - Predict loan outcomes based on input features.</li>
+                    <li><strong>/status</strong> - Check the status of the API.</li>
+                </ul>
+                <p>To use the API, make sure to send your requests in the correct format and specify the necessary parameters.</p>
+                <p>For more details, refer to the <a href="/docs">API Documentation</a>.</p>
+            </div>
+        </body>
+        </html>
+    '''
+
+
 # Define label encoding mappings (must match those used during training)
 label_mappings = {
     "Gender": {"Male": 1, "Female": 0, 1: 1, 0: 0}, 
