@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 import joblib
 import numpy as np
 from flask_cors import CORS
-CORS(app)
+from flask import render_template
 
 # Load the trained models (scaler and random forest model)
 scaler = joblib.load("scaler.pkl")
@@ -11,7 +11,8 @@ model = joblib.load("random_forest_model.pkl")
 # Initialize Flask app
 app = Flask(__name__)
 
-from flask import render_template
+CORS(app)
+
 
 @app.route('/')
 def home():
