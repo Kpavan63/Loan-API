@@ -63,6 +63,13 @@ def home():
     '''
 
 
+@app.route('/status', methods=['GET'])
+def status():
+    return {
+        "status": "API is live and running.",
+        "code": 200
+    }
+
 # Define label encoding mappings (must match those used during training)
 label_mappings = {
     "Gender": {"Male": 1, "Female": 0, 1: 1, 0: 0}, 
