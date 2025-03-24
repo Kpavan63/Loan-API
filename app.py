@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 import joblib
 import numpy as np
+from flask_cors import CORS
+CORS(app)
 
 # Load the trained models (scaler and random forest model)
 scaler = joblib.load("scaler.pkl")
