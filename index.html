@@ -26,11 +26,132 @@
             transition: all 0.3s ease;
         }
 
+        /* Animation Background */
+        .area {
+            background: var(--background-color);
+            width: 100%;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        .circles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .circles li {
+            position: absolute;
+            display: block;
+            list-style: none;
+            width: 20px;
+            height: 20px;
+            background: rgba(59, 130, 246, 0.1);
+            animation: animate 25s linear infinite;
+            bottom: -150px;
+            border-radius: 50%;
+        }
+
+        .circles li:nth-child(1) {
+            left: 25%;
+            width: 80px;
+            height: 80px;
+            animation-delay: 0s;
+        }
+
+        .circles li:nth-child(2) {
+            left: 10%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 2s;
+            animation-duration: 12s;
+        }
+
+        .circles li:nth-child(3) {
+            left: 70%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 4s;
+        }
+
+        .circles li:nth-child(4) {
+            left: 40%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 0s;
+            animation-duration: 18s;
+        }
+
+        .circles li:nth-child(5) {
+            left: 65%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 0s;
+        }
+
+        .circles li:nth-child(6) {
+            left: 75%;
+            width: 110px;
+            height: 110px;
+            animation-delay: 3s;
+        }
+
+        .circles li:nth-child(7) {
+            left: 35%;
+            width: 150px;
+            height: 150px;
+            animation-delay: 7s;
+        }
+
+        .circles li:nth-child(8) {
+            left: 50%;
+            width: 25px;
+            height: 25px;
+            animation-delay: 15s;
+            animation-duration: 45s;
+        }
+
+        .circles li:nth-child(9) {
+            left: 20%;
+            width: 15px;
+            height: 15px;
+            animation-delay: 2s;
+            animation-duration: 35s;
+        }
+
+        .circles li:nth-child(10) {
+            left: 85%;
+            width: 150px;
+            height: 150px;
+            animation-delay: 0s;
+            animation-duration: 11s;
+        }
+
+        @keyframes animate {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+                border-radius: 0;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+                border-radius: 50%;
+            }
+        }
+
         body {
             background: var(--background-color);
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             color: var(--text-color);
             line-height: 1.6;
+            position: relative;
         }
 
         .gradient-bg {
@@ -53,6 +174,14 @@
                 0 4px 6px -2px rgba(0, 0, 0, 0.025);
             border: none;
             overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .advanced-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 20px 25px -5px rgba(0, 0, 0, 0.1), 
+                0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
 
         .card-header {
@@ -144,6 +273,41 @@
             border-radius: 10px;
         }
 
+        /* History Section */
+        .history-item {
+            border-left: 4px solid var(--primary-color);
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 0 8px 8px 0;
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-item.approved {
+            border-left-color: var(--secondary-color);
+        }
+
+        .history-item.rejected {
+            border-left-color: #ef4444;
+        }
+
+        .history-date {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .history-empty {
+            text-align: center;
+            padding: 20px;
+            color: #6b7280;
+            font-style: italic;
+        }
+
         /* Responsive Adjustments */
         @media (max-width: 768px) {
             .advanced-card {
@@ -173,6 +337,25 @@
     </style>
 </head>
 <body>
+    <!-- Background Animation -->
+    <div class="area">
+        <ul class="circles">
+            <li style="background-color: #10b981;"></li>
+            <li style="background-color: #3b82f6;"></li>
+            <li style="background-color: #10b981;"></li>
+            <li style="background-color: #10b981;"></li>
+            <li style="background-color: #3b82f6;"></li>
+            <li style="background-color: #3b82f6;"></li>
+            <li style="background-color: #10b981;"></li>
+            <li style="background-color: #3b82f6;"></li>
+            <li style="background-color: #10b981;"></li>
+            <li style="background-color: #3b82f6;"></li>
+            <li style="background-color: #10b981;"></li>
+            <li style="background-color: #3b82f6;"></li>
+
+        </ul>
+    </div>
+
     <!-- Header Information -->
     <div class="info-header">
         <div class="container">
@@ -321,6 +504,25 @@
                         </form>
                     </div>
                 </div>
+
+                <!-- History Section -->
+                <div class="advanced-card animate__animated animate__fadeIn mt-4">
+                    <div class="card-header">
+                        <h3 class="mb-0">
+                            <i class="fas fa-history me-2"></i>Prediction History
+                        </h3>
+                        <div>
+                            <button id="clearHistory" class="btn btn-sm btn-light">
+                                <i class="fas fa-trash-alt me-1"></i>Clear
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div id="historyContent">
+                            <div class="history-empty">No prediction history yet</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Result Card -->
@@ -411,6 +613,81 @@
             setInterval(() => {
                 currentDateTime = updateDateTime();
             }, 1000);
+
+            // History Management Functions
+            function loadHistory() {
+                const historyContent = document.getElementById('historyContent');
+                const history = JSON.parse(localStorage.getItem('loanPredictionHistory') || '[]');
+                
+                if (history.length === 0) {
+                    historyContent.innerHTML = '<div class="history-empty">No prediction history yet</div>';
+                    return;
+                }
+                
+                let historyHTML = '';
+                history.slice(0, 5).forEach((item, index) => {
+                    const statusClass = item.prediction === 'Approved' ? 'approved' : 'rejected';
+                    const statusIcon = item.prediction === 'Approved' ? 'check-circle' : 'times-circle';
+                    
+                    historyHTML += `
+                        <div class="history-item ${statusClass}">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <strong><i class="fas fa-${statusIcon} me-2"></i>${item.prediction}</strong>
+                                    <div>Loan Amount: ₹${item.loanAmount.toLocaleString()}</div>
+                                </div>
+                                <div class="history-date">${new Date(item.timestamp).toLocaleString()}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                historyContent.innerHTML = historyHTML;
+            }
+            
+            function saveToHistory(data, formData) {
+                const history = JSON.parse(localStorage.getItem('loanPredictionHistory') || '[]');
+                
+                const historyItem = {
+                    timestamp: new Date().toISOString(),
+                    prediction: data.prediction,
+                    loanAmount: formData.LoanAmount,
+                    applicantIncome: formData.ApplicantIncome,
+                    loanTerm: formData.Loan_Amount_Term
+                };
+                
+                history.unshift(historyItem); // Add to beginning of array
+                
+                // Keep only the last 10 items
+                if (history.length > 10) {
+                    history.pop();
+                }
+                
+                localStorage.setItem('loanPredictionHistory', JSON.stringify(history));
+                loadHistory();
+            }
+            
+            // Clear history button
+            document.getElementById('clearHistory').addEventListener('click', function() {
+                Swal.fire({
+                    title: 'Clear History?',
+                    text: 'This will remove all prediction history. This action cannot be undone.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3b82f6',
+                    cancelButtonColor: '#ef4444',
+                    confirmButtonText: 'Yes, clear it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        localStorage.removeItem('loanPredictionHistory');
+                        loadHistory();
+                        toastr.success('History cleared successfully');
+                    }
+                });
+            });
+            
+            // Load history on page load
+            loadHistory();
         
             // Form Submission Handler
             const form = document.getElementById('loanForm');
@@ -471,6 +748,9 @@
                 loadingModal.hide();
         
                 if (response.status === 200) {
+                    // Save to history
+                    saveToHistory(response.data, formData);
+                    
                     // Prepare result display
                     const resultDiv = document.getElementById('resultDisplay');
                     const resultContent = document.getElementById('resultContent');
@@ -568,6 +848,7 @@
                 });
             });
         });
-        </script>
+    </script>
 </body>
 </html>
+
