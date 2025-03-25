@@ -19,20 +19,6 @@ A Flask-based Loan Prediction API that uses a trained **Random Forest model** to
 
 ---
 
-##Example Request
-POST /predict
-{
-    "Gender": "Male",
-    "Married": "Yes",
-    "Dependents": "1",
-    "Education": "Graduate",
-    "Self_Employed": "No",
-    "ApplicantIncome": 5000,
-    "CoapplicantIncome": 2000,
-    "LoanAmount": 100,
-    "Loan_Amount_Term": 360,
-    "Credit_History": 1
-}
 
 ---
 
