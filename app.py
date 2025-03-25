@@ -11,7 +11,7 @@ scaler = joblib.load("scaler.pkl")
 model = joblib.load("random_forest_model.pkl")
 
 # Initialize Flask app
-app = Flask(__name__, template_folder="app/templates")
+app = Flask(__name__, template_folder="templates")
 
 
 CORS(app)
