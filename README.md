@@ -18,13 +18,10 @@ A Flask-based Loan Prediction API that uses a trained **Random Forest model** to
 - **Security:** CSP, HTTPS enforcement, Security Headers
 
 ---
-{
-    "Gender": "Male",
-    "Married": "Yes",
-    "Dependents": "1",
-    "Education": "Graduate",
-    "Self_Employed": "No",
-    "ApplicantIncome": 5000,
-    "Coapp
 
+Here's a simple Python function:
+
+```python
+def greet(name):
+  print(f"Hello, {name}!")
 
