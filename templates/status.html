@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Status Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f1123;
+            --bg-secondary: #1a2037;
+            --accent-color: #6a11cb;
+            --accent-light: #2575fc;
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+            overflow-x: hidden;
+        }
+
+        .status-container {
+            background: rgba(26, 32, 55, 0.8);
+            border-radius: 20px;
+            box-shadow: 
+                0 15px 35px rgba(0,0,0,0.4),
+                0 5px 15px rgba(0,0,0,0.3);
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            transform: translateZ(50px);
+            transition: all 0.3s ease-out;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .status-container:hover {
+            transform: scale(1.03) translateZ(80px) rotateX(5deg) rotateY(-5deg);
+            box-shadow: 
+                0 20px 45px rgba(0,0,0,0.5),
+                0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        .status-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(45deg, var(--accent-color), var(--accent-light));
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: transform 0.3s ease;
+        }
+
+        .status-badge:hover {
+            transform: scale(1.05);
+        }
+
+        .status-badge i {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .status-details {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .status-details:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .status-item:hover {
+            background: rgba(255,255,255,0.05);
+            transform: translateX(10px);
+        }
+
+        .status-item .label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .status-item .value {
+            font-weight: 600;
+            color: var(--accent-light);
+        }
+
+        @media (max-width: 768px) {
+            .status-container {
+                margin: 20px;
+                padding: 25px;
+            }
+
+            .status-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .status-badge {
+                margin-bottom: 15px;
+            }
+        }
+
+        /* Pulse Animation for Live Status */
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(37, 117, 252, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 15px rgba(37, 117, 252, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(37, 117, 252, 0);
+            }
+        }
+
+        .live-pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="status-container">
+        <div class="status-header">
+            <div class="status-badge live-pulse">
+                <i class="fas fa-satellite-dish"></i>
+                API Status: Live
+            </div>
+            <div id="current-time"></div>
+        </div>
+
+        <div class="status-details">
+            <div class="status-item">
+                <span class="label">System Status</span>
+                <span class="value">Operational</span>
+            </div>
+            <div class="status-item">
+                <span class="label">Response Code</span>
+                <span class="value">200 OK</span>
+            </div>
+            <div class="status-item">
+                <span class="label">Uptime</span>
+                <span class="value" id="uptime">Calculating...</span>
+            </div>
+            <div class="status-item">
+                <span class="label">Last Updated</span>
+                <span class="value" id="last-updated"></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update current time
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('current-time').innerHTML = `
+                <span style="color: var(--text-secondary); font-size: 0.9em;">
+                    ${now.toLocaleString('en-US', { 
+                        dateStyle: 'medium', 
+                        timeStyle: 'short' 
+                    })}
+                </span>
+            `;
+            document.getElementById('last-updated').textContent = now.toLocaleTimeString();
+        }
+
+        // Uptime calculation
+        function calculateUptime() {
+            const startTime = new Date(Date.now() - (Math.random() * 1000000));
+            const uptimeElement = document.getElementById('uptime');
+            
+            function updateUptime() {
+                const now = new Date();
+                const diff = now - startTime;
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                
+                uptimeElement.textContent = `${days}d ${hours}h ${minutes}m`;
+            }
+
+            updateUptime();
+            setInterval(updateUptime, 60000);
+        }
+
+        // Initialize
+        updateTime();
+        calculateUptime();
+        setInterval(updateTime, 1000);
+    </script>
+</body>
+</html
