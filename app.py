@@ -40,7 +40,7 @@ limiter = Limiter(
     storage_uri="memory://",  # Store rate-limit data in memory (suitable for single-instance apps)
 )
 
-@@app.route('/')
+@app.route('/')
 def home():
     return render_template('index.html')
 
