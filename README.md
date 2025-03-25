@@ -34,4 +34,25 @@ Here's a simple Responce POST to Api:
     "Loan_Amount_Term": 30,
     "Credit_History": 1
 }
+```
 
+Out Responce From Api:
+
+```json
+
+{
+    "input": {
+        "ApplicantIncome": 100000.0,
+        "CoapplicantIncome": 45000.0,
+        "Credit_History": 1.0,
+        "Dependents": 3,
+        "Education": 1,
+        "Gender": 1,
+        "LoanAmount": 500000.0,
+        "Loan_Amount_Term": 30.0,
+        "Married": 0,
+        "Self_Employed": 1
+    },
+    "prediction": "Approved"
+}
+```
