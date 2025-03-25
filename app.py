@@ -11,7 +11,7 @@ scaler = joblib.load("scaler.pkl")
 model = joblib.load("random_forest_model.pkl")
 
 # Initialize Flask app
-app = Flask(__name__, template_folder="templates")
+app = Flask(__name__)
 
 
 CORS(app)
@@ -24,15 +24,17 @@ def enforce_https():
 
 @app.after_request
 def apply_csp(response):
-    response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self'; style-src 'self';"
-    return response
-
-@app.after_request
-def add_security_headers(response):
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; "
+        "script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net 'unsafe-inline'; "
+        "style-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.googleapis.com 'unsafe-inline'; "
+        "font-src 'self' https://fonts.gstatic.com; "
+    )
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "DENY"
     response.headers["X-XSS-Protection"] = "1; mode=block"
     return response
+
 # Initialize Flask-Limiter for rate limiting
 limiter = Limiter(
     get_remote_address,  # Use the client's IP address for rate limiting
