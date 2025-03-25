@@ -1,1 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan API </title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color-1: #0a192f;
+            --bg-color-2: #112240;
+            --accent-color: #64ffda;
+            --text-color: #8892b0;
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            overflow: scroll;
+            font-family: 'Poppins', sans-serif;
+            height: 100%;
+            width: 100%;
+        }
+
+        #background-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+        }
+
+        .glass-card {
+            background: rgba(17, 34, 64, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(100, 255, 218, 0.2);
+        }
+
+        .animate-glow {
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            0% {
+                box-shadow: 0 0 10px rgba(100, 255, 218, 0.2);
+            }
+            100% {
+                box-shadow: 0 0 30px rgba(100, 255, 218, 0.6);
+            }
+        }
+
+        .copy-url-input {
+            background-color: rgba(10, 25, 47, 0.7);
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        pre code {
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <canvas id="background-canvas"></canvas>
+
+    <div class="container mx-auto px-4 py-16 content-wrapper relative">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="mb-12">
+                <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">
+                    Loan API
+                </h1>
+                <div class="hero-text text-2xl md:text-3xl text-gray-300 mb-8">
+                    <span id="typed-output"></span>
+                </div>
+
+                <!-- URL Copy Section -->
+                <div class="copy-url-container mb-12">
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            value="https://loan-api-c0xd.onrender.com/" 
+                            readonly 
+                            class="copy-url-input w-full p-3 rounded-lg"
+                            id="api-url"
+                        >
+                        <button 
+                            class="copy-btn absolute right-3 top-1/2 transform -translate-y-1/2"
+                            onclick="copyUrl()"
+                        >
+                            <i class="fas fa-copy fa-lg"></i>
+                        </button>
+                        <div class="tooltip absolute bottom-[-30px] left-1/2 transform -translate-x-1/2 bg-teal-600 text-white p-2 rounded-md text-xs opacity-0 transition-opacity">
+                            Click to copy URL
+                        </div>
+                    </div>
+                </div>
+
+                <!-- API Request/Response Section -->
+                <div class="glass-card rounded-lg shadow-lg p-8 mb-12 animate-glow">
+                    <h2 class="text-3xl font-bold text-white mb-6">API Request & Response</h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Request Section -->
+                        <div>
+                            <h3 class="text-xl font-semibold text-white mb-4">Request Example</h3>
+                            <div class="bg-0a192f p-4 rounded-lg text-left text-sm overflow-x-auto">
+                                <pre><code>{
+    "Gender": 1,
+    "Married": 0,
+    "Dependents": 3,
+    "Education": 1,
+    "Self_Employed": "Yes",
+    "ApplicantIncome": 100000,
+    "CoapplicantIncome": 45000,
+    "LoanAmount": 500000,
+    "Loan_Amount_Term": 30,
+    "Credit_History": 1
+}</code></pre>
+                            </div>
+                        </div>
+                        
+                        <!-- Response Section -->
+                        <div>
+                            <h3 class="text-xl font-semibold text-white mb-4">Response Example</h3>
+                            <div class="bg-0a192f p-4 rounded-lg text-left text-sm overflow-x-auto">
+                                <pre><code>{
+    "input": {
+        "ApplicantIncome": 100000.0,
+        "CoapplicantIncome": 45000.0,
+        "Credit_History": 1.0,
+        "Dependents": 3,
+        "Education": 1,
+        "Gender": 1,
+        "LoanAmount": 500000.0,
+        "Loan_Amount_Term": 30.0,
+        "Married": 0,
+        "Self_Employed": 1
+    },
+    "prediction": "Approved"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- API Endpoints -->
+                <div class="grid md:grid-cols-3 gap-6 mb-12">
+                    <div class="glass-card p-6 rounded-lg shadow-lg animate-glow">
+                        <h3 class="text-xl font-semibold mb-4 text-white">/loan</h3>
+                        <p class="text-gray-300">Process loan information quickly and efficiently.</p>
+                    </div>
+                    <div class="glass-card p-6 rounded-lg shadow-lg animate-glow">
+                        <h3 class="text-xl font-semibold mb-4 text-white">/predict</h3>
+                        <p class="text-gray-300">Advanced machine learning loan outcome predictions.</p>
+                    </div>
+                    <div class="glass-card p-6 rounded-lg shadow-lg animate-glow">
+                        <h3 class="text-xl font-semibold mb-4 text-white">/status</h3>
+                        <p class="text-gray-300">Real-time API health and performance monitoring.</p>
+                    </div>
+                </div>
+
+                <!-- Call to Action -->
+                <a href="#" style="background-color: #64ffda; color: #0a192f;" 
+   class="px-8 py-3 rounded-full text-lg font-medium hover:opacity-80 transition-opacity duration-300 inline-block shadow-lg">
+   View API Documentation
+</a>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyUrl() {
+            const urlInput = document.getElementById('api-url');
+            urlInput.select();
+            urlInput.setSelectionRange(0, 99999);
+            
+            try {
+                document.execCommand('copy');
+                const tooltip = document.querySelector('.tooltip');
+                tooltip.textContent = 'URL Copied!';
+                tooltip.style.opacity = '1';
+                
+                setTimeout(() => {
+                    tooltip.textContent = 'Click to copy URL';
+                    tooltip.style.opacity = '0';
+                }, 2000);
+            } catch (err) {
+                alert('Unable to copy URL. Please copy manually.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Typed.js initialization
+            new Typed('#typed-output', {
+                strings: [
+                    'Powering Smart Financial Decisions',
+                    'Machine Learning Loan Predictions',
+                    'Secure and Scalable API Solutions'
+                ],
+                typeSpeed: 50,
+                backSpeed: 30,
+                backDelay: 2000,
+                loop: true
+            });
+
+            // Advanced Canvas Background Animation
+            const canvas = document.getElementById('background-canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Resize canvas to full window
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            // Particle class
+            class Particle {
+                constructor() {
+                    this.reset();
+                }
+
+                reset() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = canvas.height + Math.random() * 100;
+                    this.radius = Math.random() * 3 + 1;
+                    this.vy = -(Math.random() * 2 + 1);
+                    this.vx = Math.sin(this.y) * 0.5;
+                    this.alpha = 0.1;
+                    this.color = `rgba(100, 255, 218, ${Math.random() * 0.5})`;
+                }
+
+                update() {
+                    this.y += this.vy;
+                    this.x += this.vx;
+                    
+                    // Fade in and out
+                    if (this.y < canvas.height / 2) {
+                        this.alpha = Math.min(this.alpha + 0.02, 0.5);
+                    } else {
+                        this.alpha = Math.max(this.alpha - 0.02, 0.1);
+                    }
+
+                    // Reset if out of bounds
+                    if (this.y < -10) {
+                        this.reset();
+                    }
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.globalAlpha = this.alpha;
+                    ctx.fill();
+                    ctx.closePath();
+                }
+            }
+
+            // Create particles
+            const particlesCount = 200;
+            const particles = Array.from({ length: particlesCount }, () => new Particle());
+
+            // Animation loop
+            function animate() {
+                // Clear canvas
+                ctx.fillStyle = 'rgba(10, 25, 47, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Update and draw particles
+                particles.forEach(particle => {
+                    particle.update();
+                    particle.draw();
+                });
+
+                requestAnimationFrame(animate);
+            }
+
+            // Start animation
+            animate();
+        });
+    </script>
+</body>
+</html>
