@@ -1,8 +1,10 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, redirect
 import joblib
 import numpy as np
 from flask_cors import CORS
 from flask import render_template
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 # Load the trained models (scaler and random forest model)
 scaler = joblib.load("scaler.pkl")
@@ -13,6 +15,30 @@ app = Flask(__name__)
 
 CORS(app)
 
+@app.before_request
+def enforce_https():
+    if not request.is_secure:
+        url = request.url.replace('http://', 'https://', 1)
+        return redirect(url, code=301)
+
+@app.after_request
+def apply_csp(response):
+    response.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self'; style-src 'self';"
+    return response
+
+@app.after_request
+def add_security_headers(response):
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    return response
+# Initialize Flask-Limiter for rate limiting
+limiter = Limiter(
+    get_remote_address,  # Use the client's IP address for rate limiting
+    app=app,
+    default_limits=["10 per minute"],  # Default limit: 10 requests per minute
+    storage_uri="memory://",  # Store rate-limit data in memory (suitable for single-instance apps)
+)
 
 @app.route('/')
 def home():
@@ -94,6 +120,7 @@ def validate_numeric(field_value, field_name):
         return None
 
 @app.route("/predict", methods=["POST"])
+@limiter.limit("5 per minute")  # Limit to 5 requests per minute
 def predict():
     try:
         # Get JSON data from the request
