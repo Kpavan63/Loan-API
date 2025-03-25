@@ -20,10 +20,3 @@ A Flask-based Loan Prediction API that uses a trained **Random Forest model** to
 ---
 
 
----
-
-##Example Response
-{
-    "input": { ... },
-    "prediction": "Approved"
-}
