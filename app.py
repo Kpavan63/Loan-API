@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, redirect
 import joblib
+import threading
 import numpy as np
 from flask_cors import CORS
 from flask import render_template
@@ -15,6 +16,23 @@ app = Flask(__name__)
 
 
 CORS(app)
+
+@app.route('/ping')
+def ping():
+    return "OK", 200
+
+def keep_awake():
+    url = "https://loan-api-c0xd.onrender.com/ping"  # Update with your actual API URL
+    while True:
+        try:
+            response = requests.get(url, timeout=5)
+            print(f"Ping response: {response.status_code}")
+        except Exception as e:
+            print(f"Ping failed: {e}")
+        time.sleep(300)  # Ping every 5 minutes
+
+# Start self-pinging in a separate thread
+threading.Thread(target=keep_awake, daemon=True).start()
 
 @app.before_request
 def enforce_https():
